@@ -34,6 +34,8 @@ def socket_thread(conn, address):
         msg = message(conn)
         if msg:
             broadcast(msg, conn, address)
+            msg.decode('utf-8')
+            print("(%s, %s) dice: \n" % address, msg)
         else:
             print("(%s, %s) is offline\n" % address)
             sockets.remove(conn)
