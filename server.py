@@ -32,7 +32,6 @@ def socket_thread(conn, address):
     while True:
         msg = message(conn)
         if msg:
-            print(type(msg))
             broadcast(msg, conn)
         else:
             print("(%s, %s) is offline\n" % address)
