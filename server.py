@@ -9,7 +9,6 @@ socket.setsockopt(s.SOL_SOCKET, s.SO_REUSEADDR, 1)
 socket.bind((v.HOST, v.PORT))
 socket.listen(v.CLIENTS)
 
-sockets.append(socket)
 print(f'Server on {v.HOST}:{v.PORT}')
 
 # recibe el mensaje de un cliente
