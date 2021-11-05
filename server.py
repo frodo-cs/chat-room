@@ -3,7 +3,6 @@ import variables as v
 import threading
 
 sockets = []
-
 socket = s.socket(s.AF_INET, s.SOCK_STREAM)
 socket.setsockopt(s.SOL_SOCKET, s.SO_REUSEADDR, 1)
 socket.bind((v.HOST, v.PORT))
@@ -22,17 +21,19 @@ def message(socket):
         return False
 
 # envia el mensaje a todos los clientes que no son el emisor
-def broadcast(message, sock):
+def broadcast(message, sock, address):
     for client in sockets:
         if client != sock:
-            client.send(message)
+            (host, port) = address
+            msg = f"{host}:{port} > {message.decode('utf-8')}"
+            client.send(str.encode(msg))
 
 # hilo del cliente
 def socket_thread(conn, address):
     while True:
         msg = message(conn)
         if msg:
-            broadcast(msg, conn)
+            broadcast(msg, conn, address)
         else:
             print("(%s, %s) is offline\n" % address)
             sockets.remove(conn)
@@ -43,11 +44,12 @@ def socket_thread(conn, address):
 def new_thread(conn, address):
     thread = threading.Thread(target = socket_thread, args=(conn, address, ))
     thread.start()
-    return 
+    return
+
 
 while True:
     conn, address = socket.accept()
     sockets.append(conn)
     print("(%s, %s) connected" % address)
     new_thread(conn, address)
-    
+
